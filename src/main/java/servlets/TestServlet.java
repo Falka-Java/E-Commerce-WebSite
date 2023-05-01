@@ -7,11 +7,11 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import models.User;
 
-@WebServlet(name = "testservlet", value = "/test")
+@WebServlet(name = "test-servlet", value = "/test")
 public class TestServlet extends HttpServlet {
     //region Private fields
     private String message;
-    private DAL<User> userDal;
+    private final DAL<User> userDal;
     //endregion
 
 

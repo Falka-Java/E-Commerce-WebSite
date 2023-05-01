@@ -13,23 +13,27 @@ import java.util.Optional;
 
 public class UserDAL implements DAL<User> {
     private Connection conn;
-    private DbProvider dbProvider;
     private ResultSet res;
     private PreparedStatement pstmt;
     private String query;
 
-    public UserDAL(){
+    public UserDAL() {
         conn = null;
         res = null;
         pstmt = null;
         query = "";
     }
 
+    /**
+     * Returns user by id
+     * @param id id of the user
+     * @return Optional User object, if user is not found returns Optional.empty()
+     */
     @Override
     public Optional<User> get(long id) {
         User result = null;
         try {
-            conn = dbProvider.getMySqlConnection();
+            conn = DbProvider.getMySqlConnection();
 
             //SQL query that will get all users from the database with provided id
             query = "SELECT * FROM users WHERE id = ?";
@@ -44,23 +48,27 @@ public class UserDAL implements DAL<User> {
             String email = res.getString("email");
             String pw_hash = res.getString("pw_hash");
 
-            result = new User(name, surname, email, pw_hash);
+            result = new User(userId, name, surname, email, pw_hash);
 
-        }catch (SQLException ex){
-            System.out.println(ex.getMessage());
-        }catch (ClassNotFoundException ex){
-            System.out.println(ex.getMessage());
-        }finally {
+        } catch (SQLException ex) {
+            System.out.println("SQL-Exception -> " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
             closeAllConnections();
         }
         return Optional.ofNullable(result);
     }
 
+    /**
+     * Returns all users
+     * @return list of users
+     */
     @Override
     public List<User> getAll() {
         //Returning all users that are in the database
-        List<User> users = new LinkedList<User>();
-        try{
+        List<User> users = new LinkedList<>();
+        try {
             conn = DbProvider.getMySqlConnection();
 
             //SQL query that will get all users from the database
@@ -69,21 +77,20 @@ public class UserDAL implements DAL<User> {
             res = pstmt.executeQuery();
 
             //Getting users from the result set
-            while(res.next()){
+            while (res.next()) {
                 long userId = res.getLong("id");
                 String name = res.getString("name");
                 String surname = res.getString("surname");
                 String email = res.getString("email");
                 String pw_hash = res.getString("pw_hash");
-
-                users.add(new User(name, surname, email, pw_hash));
+                users.add(new User(userId, name, surname, email, pw_hash));
             }
 
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println("SQL-Exception -> " + ex.getMessage());
-        }catch (ClassNotFoundException ex){
-            System.out.println(ex.getMessage());
-        }finally {
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
             closeAllConnections();
         }
 
@@ -91,31 +98,119 @@ public class UserDAL implements DAL<User> {
     }
 
 
+    /**
+     * Method that adds user to the database
+     * @param user user to add
+     * @return true if user is added, false if not
+     */
     @Override
-    public void save(User user) {
-
-    }
-
-    @Override
-    public void update(User user, String[] params) {
-
-    }
-
-    @Override
-    public void delete(User user) {
-
-    }
-
-    private void closeAllConnections(){
+    public boolean add(User user) {
+        boolean success = false;
         try {
-            if(pstmt!=null)
+            conn = DbProvider.getMySqlConnection();
+
+            //SQL query that will add user to the database
+            query = "INSERT INTO users (name, surname, email, pw_hash) VALUES (?, ?, ?, ?)";
+
+            pstmt = conn.prepareStatement(query);
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getSurname());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getPw_hash());
+            int rowCount = pstmt.executeUpdate();
+            if (rowCount != 0) success = true;
+
+        } catch (SQLException ex) {
+            System.out.println("SQL-Exception -> " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
+            closeAllConnections();
+        }
+        return success;
+    }
+
+
+    /**
+     * Method that updates user in the database
+     * @param user original user
+     * @param params new user parameters(name, surname, email, pw_hash)
+     *               Possible to provide fewer parameters, than required
+     * @return true if user was updated, false if not, can also return false if nothing was changed
+     */
+    @Override
+    public boolean update(User user, String[] params) {
+        boolean success = false;
+        try {
+            conn = DbProvider.getMySqlConnection();
+
+            //SQl query that will update user in the database
+            query = "UPDATE users SET name = ?, surname = ?, email = ?, pw_hash = ? WHERE id = ?";
+
+            pstmt = conn.prepareStatement(query);
+            for (int i = 0; i<params.length; i++){
+                pstmt.setString(i+1, params[i]);
+            }
+            pstmt.setString(1, params[0]);
+            pstmt.setString(2, params[1]);
+            pstmt.setString(3, params[2]);
+            pstmt.setString(4, params[3]);
+            pstmt.setLong(5, user.getId());
+            int rowCount = pstmt.executeUpdate();
+            if (rowCount != 0) success = true;
+        } catch (SQLException ex) {
+            System.out.println("SQL-Exception -> " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
+            closeAllConnections();
+        }
+        return success;
+    }
+
+    /**
+     * Method that deletes user from the database
+     * @param user user to delete
+     * @return true if user was deleted, false if not
+     */
+    @Override
+    public boolean delete(User user) {
+        boolean success = false;
+        //Deleting user from the database
+        try {
+            conn = DbProvider.getMySqlConnection();
+
+            //SQL query that will delete user from the database
+            query = "DELETE FROM users WHERE id = ?";
+
+            pstmt = conn.prepareStatement(query);
+            pstmt.setLong(1, user.getId());
+            int rowCount = pstmt.executeUpdate();
+            if(rowCount != 0) success = true;
+
+        } catch (SQLException ex) {
+            System.out.println("SQL-Exception -> " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
+            closeAllConnections();
+        }
+        return success;
+    }
+
+    /**
+     * Method that closes all connections
+     */
+    private void closeAllConnections() {
+        try {
+            if (pstmt != null)
                 pstmt.close();
-            if(conn!=null)
+            if (conn != null)
                 conn.close();
-            if(res!=null){
+            if (res != null) {
                 res.close();
             }
-        }catch (SQLException ex){
+        } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         }
     }

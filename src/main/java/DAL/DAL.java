@@ -8,9 +8,9 @@ public interface DAL<T> {
 
     List<T> getAll();
 
-    void save(T t);
+    boolean add(T t);
 
-    void update(T t, String[] params);
+    boolean update(T t, String[] params);
 
-    void delete(T t);
+    boolean delete(T t);
 }

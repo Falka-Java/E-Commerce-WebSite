@@ -63,6 +63,13 @@ public class User {
         this.email = email;
         this.pw_hash = pw_hash;
     }
+    public User(long id, String name, String surname, String email, String pw_hash) {
+        this.id = id;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
+        this.pw_hash = pw_hash;
+    }
     //endregion
 
     //region Overrides
