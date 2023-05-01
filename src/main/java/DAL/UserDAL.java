@@ -7,9 +7,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class UserDAL implements DAL<User> {
     private Connection conn;
@@ -196,6 +198,23 @@ public class UserDAL implements DAL<User> {
             closeAllConnections();
         }
         return success;
+    }
+
+    /**
+     * Search based in Predicate
+     * @param filter - Predicate to filter by
+     * @return List of users that match the predicate
+     */
+    @Override
+    public List<User> search(Predicate<User> filter) {
+        List<User> results = new ArrayList<>();
+
+        for (User user : getAll()) {
+            if (filter.test(user)) {
+                results.add(user);
+            }
+        }
+        return results;
     }
 
     /**

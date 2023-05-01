@@ -36,6 +36,16 @@ public class UserDAO implements DAO<User> {
     }
 
     /**
+     * Returns user by email
+     *
+     * @param email email of the user
+     * @return Optional User object, if user is not found returns Optional.empty()
+     */
+    public Optional<User> getByEmail(String email) {
+        return userDAL.search(user -> user.getEmail().equals(email)).stream().findFirst();
+    }
+
+    /**
      * Returns all users
      *
      * @return list of users
@@ -64,6 +74,7 @@ public class UserDAO implements DAO<User> {
         User user = new User(name, surname, email, hashed_password);
         return userDAL.add(user);
     }
+
 
     /**
      * Method that adds user to the database. Password must be hashed previously!
