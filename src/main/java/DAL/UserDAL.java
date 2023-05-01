@@ -80,7 +80,7 @@ public class UserDAL implements DAL<User> {
             }
 
         }catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            System.out.println("SQL-Exception -> " + ex.getMessage());
         }catch (ClassNotFoundException ex){
             System.out.println(ex.getMessage());
         }finally {
