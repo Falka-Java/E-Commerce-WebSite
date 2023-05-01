@@ -1,4 +1,4 @@
-package com.feshior.ecommerce;
+package servlets;
 
 import java.io.*;
 
