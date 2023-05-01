@@ -6,13 +6,9 @@ import models.User;
 import java.util.Optional;
 
 public class AuthenticationService {
-    private final UserDAO userDAO;
+    private static  UserDAO userDAO = new UserDAO();
 
-    public AuthenticationService(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
-    public Optional<User> authenticate(String email, String password) {
+    public static Optional<User> authenticate(String email, String password) {
         Optional<User> user = userDAO.getByEmail(email);
 
         //If user is not found, return empty optional

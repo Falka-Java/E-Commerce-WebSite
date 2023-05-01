@@ -2,7 +2,7 @@
 <html lang="en">
 
 <!--Header-->
-<%@include file="/includes/header.jsp"%>
+<%@include file="/includes/head.jsp"%>
 <!--Header-->
 
 <body>
@@ -11,25 +11,28 @@
   <%@include file="/includes/navbar.jsp"%>
   <!-- Navbar -->
 
-  <!-- Jumbotron -->
-  <div class="bg-primary text-white py-5">
-    <div class="container py-5">
-      <h1>
-        Best products & <br />
-        brands in our store
-      </h1>
-      <p>
-        Trendy Products, Factory Prices, Excellent Service
-      </p>
-      <button type="button" class="btn btn-outline-light">
-        Learn more
-      </button>
-      <button type="button" class="btn btn-light shadow-0 text-primary pt-2 border border-white">
-        <span class="pt-1">Purchase now</span>
-      </button>
+<main>
+  <div class="content-box">
+    <!-- Content placeholder -->
+    <!-- Jumbotron -->
+    <div class="bg-primary text-white py-5">
+      <div class="container py-5">
+        <h1>
+          Best products & <br />
+          brands in our store
+        </h1>
+        <p>
+          Trendy Products, Factory Prices, Excellent Service
+        </p>
+        <button type="button" class="btn btn-outline-light">
+          Learn more
+        </button>
+        <button type="button" class="btn btn-light shadow-0 text-primary pt-2 border border-white">
+          <span class="pt-1">Purchase now</span>
+        </button>
+      </div>
     </div>
-  </div>
-  <!-- Jumbotron -->
+    <!-- Jumbotron -->
 </header>
 
 <!-- Products -->
@@ -240,6 +243,10 @@
   <!-- container end.// -->
 </section>
 <!-- Feature -->
+    <!-- /Content placeholder -->
+  </div>
+</main>
+
 
 <!-- Footer -->
 <%@include file="/includes/footer.jsp"%>

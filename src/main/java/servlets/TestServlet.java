@@ -25,6 +25,7 @@ public class TestServlet extends HttpServlet {
     }
     //endregion
 
+    @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
 
@@ -38,6 +39,8 @@ public class TestServlet extends HttpServlet {
 
         out.println("</body></html>");
     }
+
+
 
     public void destroy() {
     }
