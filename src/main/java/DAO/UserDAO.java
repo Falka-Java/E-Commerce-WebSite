@@ -2,6 +2,7 @@ package DAO;
 
 import DAL.UserDAL;
 import models.User;
+import services.HashService;
 
 import java.security.MessageDigest;
 import java.util.List;
@@ -66,7 +67,7 @@ public class UserDAO implements DAO<User> {
 
     public boolean add(String name, String surname, String email, String raw_password){
         //Hashing password
-        String hashed_password = getMD5Hash(raw_password);
+        String hashed_password = HashService.getMD5Hash(raw_password);
 
         //Checking if email is valid
         if(!EMAIL_PATTERN.matcher(email).matches()) return false;
@@ -107,27 +108,7 @@ public class UserDAO implements DAO<User> {
     //endregion
 
     //region Private methods
-    /**
-     * Method that hashes inputted string using MD5 algorithm
-     * @param input string to hash
-     * @return hashed string or null if an error occurred
-     */
 
-    private String getMD5Hash(String input){
-        try{
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] messageDigest = md.digest(input.getBytes());
-
-            StringBuilder sb = new StringBuilder();
-            for(byte b : messageDigest){
-                sb.append(String.format("%02x", b));
-            }
-            return sb.toString();
-        } catch (Exception e){
-            System.out.println("Exception -> " + e.getMessage());
-            return null;
-        }
-    }
     //endregion
 
 }
