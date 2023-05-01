@@ -2,7 +2,7 @@ package models;
 
 public class User {
     //region Private fields
-    private int id;
+    private long id;
 
     private String name;
     private String surname;
@@ -14,11 +14,11 @@ public class User {
 
     //region Setters/Getters
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
