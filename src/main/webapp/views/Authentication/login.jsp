@@ -2,13 +2,13 @@
 <html lang="en">
 
 <!--Header-->
-<%@include file="/includes/head.jsp"%>
+<%@include file="../../includes/head.jsp"%>
 <!--Header-->
 
 <body>
 <header>
     <!-- Navbar -->
-    <%@include file="/includes/navbar.jsp"%>
+    <%@include file="../../includes/navbar.jsp"%>
     <!-- Navbar -->
     <style>
         .divider:after,
@@ -38,7 +38,7 @@
                                  alt="Sample image">
                         </div>
                         <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                            <form method="post" action="${pageContext.request.contextPath}/">
+                            <form method="post" action="${pageContext.request.contextPath}/Auth/login">
 
                                 <div class="divider d-flex align-items-center my-4">
                                     <p class="text-center fw-bold mx-3 mb-0">Login</p>
@@ -93,7 +93,7 @@
 
 
     <!-- Footer -->
-    <%@include file="/includes/footer.jsp"%>
+    <%@include file="../../includes/footer.jsp"%>
 
 </body>
 </html>

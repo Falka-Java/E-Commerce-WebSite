@@ -98,6 +98,6 @@
 </footer>
 <!-- Footer -->
 <!-- MDB -->
-<script type="text/javascript" src="js/mdb.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/mdb.min.js"></script>
 <!-- Custom scripts -->
-<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/js/script.js"></script>
