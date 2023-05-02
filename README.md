@@ -3,13 +3,12 @@ E-Commerce website written on Java using Jakarta Servlet
 
 ## Website functionality
 
-- [ ] Authentication 
-- [ ] Authorization 
+- [ ] Login / Registration
 - [ ] Products list
 - [ ] Cart
 - [ ] Order products
 - [ ] Orders history
 - Admin panel
 - [ ] User roles
-- [ ] Orders managment
+- [ ] Orders management
 - [ ] Adding / Editing / Removing products
