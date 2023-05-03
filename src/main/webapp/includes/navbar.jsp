@@ -101,9 +101,9 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="Auth?page=signout">
-                Logout
-              </a>
+              <form method="post" action="<%= request.getContextPath() %>/Auth/logout">
+                <button class="button btn" type="submit">Logout</button>
+              </form>
             </li>
           <% } %>
 

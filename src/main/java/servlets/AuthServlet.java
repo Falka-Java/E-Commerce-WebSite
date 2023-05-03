@@ -42,7 +42,11 @@ public class AuthServlet extends HttpServlet {
             handleLoginRequest(request, response);
         }else if(path.equals("/registration")){
             handleRegistrationRequest(request, response);
-        }else{
+        }else if(path.equals("/logout")){
+            handleLogOutRequest(request, response);
+        }
+
+        else{
             get404Page(request, response);
         }
     }
@@ -87,8 +91,26 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
+    private void handleLogOutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        session.invalidate(); //removes all sessions attributes bound to the session
+
+        //Deleting cookies
+        Cookie userNameCookieRemove = new Cookie("user-email", "");
+        userNameCookieRemove.setMaxAge(0);
+        response.addCookie(userNameCookieRemove);
+        //Returning home page
+        response.sendRedirect(request.getContextPath());
+    }
+
     private void handleRegistrationRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         getFailedResultPage(request, response, "Registration failed!");
+    }
+
+    private void getHomePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("title", "- Homepage");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../index.jsp");
+        dispatcher.forward(request, response);
     }
     private void getSuccessfulResultPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         request.setAttribute("title", "- Successful result");
