@@ -6,7 +6,7 @@ import models.User;
 import java.util.Optional;
 
 public class AuthenticationService {
-    private static  UserDAO userDAO = new UserDAO();
+    private static final UserDAO userDAO = new UserDAO();
 
     public static Optional<User> authenticate(String email, String password) {
         Optional<User> user = userDAO.getByEmail(email);
@@ -23,4 +23,17 @@ public class AuthenticationService {
             return Optional.empty();
         }
     }
+    /**
+     * Method that adds user to the database and hashes user password
+     * @param firstName user name
+     * @param lastName user surname
+     * @param email user email
+     * @param password not hashed user password
+     * @return error message or null if user is added
+     */
+
+    public static String register(String firstName, String lastName, String email, String password) {
+        return userDAO.add(firstName, lastName, email, password);
+    }
+
 }

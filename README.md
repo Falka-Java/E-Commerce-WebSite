@@ -3,7 +3,7 @@ E-Commerce website written on Java using Jakarta Servlet
 
 ## Website functionality
 
-- [ ] Login / Registration
+- [x] Login / Registration
 - [ ] Products list
 - [ ] Cart
 - [ ] Order products

@@ -104,7 +104,37 @@ public class AuthServlet extends HttpServlet {
     }
 
     private void handleRegistrationRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        getFailedResultPage(request, response, "Registration failed!");
+        //Getting parameters from request
+        String nameInput = request.getParameter("nameInput");
+        String surnameInput = request.getParameter("surnameInput");
+        String emailInput = request.getParameter("emailInput");
+        String passwordInput = request.getParameter("passwordInput");
+        String repeatPasswordInput = request.getParameter("repeatPasswordInput");
+
+        //Validating data
+        if(nameInput == null || surnameInput == null || emailInput == null || passwordInput == null || repeatPasswordInput == null) {
+            getFailedResultPage(request, response, "One or more fields are not provided!");
+            return;
+        }
+        if(!passwordInput.equals(repeatPasswordInput)) {
+            getFailedResultPage(request, response, "Passwords do not match!");
+            return;
+        }
+
+        //Registering user
+        String registrationResult = AuthenticationService.register(nameInput, surnameInput, emailInput, passwordInput);
+
+        //Checking if registration was successful
+        if(registrationResult == null) {
+            //Logging user in
+            HttpSession session = request.getSession(true);
+            session.setAttribute("user-email", emailInput);
+
+            //Returning successful result page
+            getSuccessfulResultPage(request, response, "Registration successful!");
+        }
+        else
+            getFailedResultPage(request, response, registrationResult);
     }
     private void getSuccessfulResultPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         request.setAttribute("title", "- Successful result");

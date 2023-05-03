@@ -4,7 +4,6 @@ import DAL.UserDAL;
 import models.User;
 import services.HashService;
 
-import java.security.MessageDigest;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -12,7 +11,7 @@ import java.util.regex.Pattern;
 public class UserDAO implements DAO<User> {
     //region Private fields
     private final UserDAL userDAL;
-    private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
+    private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]+$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
     //endregion
 
@@ -62,18 +61,22 @@ public class UserDAO implements DAO<User> {
      * @param surname user surname
      * @param email user email
      * @param raw_password not hashed user password
-     * @return true if user is added, false if not
+     * @return error message or null if user is added
      */
 
-    public boolean add(String name, String surname, String email, String raw_password){
+    public String add(String name, String surname, String email, String raw_password){
         //Hashing password
         String hashed_password = HashService.getMD5Hash(raw_password);
 
         //Checking if email is valid
-        if(!EMAIL_PATTERN.matcher(email).matches()) return false;
+        if(!EMAIL_PATTERN.matcher(email).matches()) return "Email is not valid!";
 
         User user = new User(name, surname, email, hashed_password);
-        return userDAL.add(user);
+        if(userDAL.add(user)){
+            return null;
+        } else {
+            return "User with this email already exists!";
+        }
     }
 
 
