@@ -67,9 +67,7 @@ public class AuthServlet extends HttpServlet {
             return;
         }
         String rememberMeInput = request.getParameter("rememberMeCheckBox");
-        boolean rememberMe = false;
-        if(rememberMeInput != null)
-            rememberMe = true;
+        boolean rememberMe = rememberMeInput != null;
 
         Optional<User> result = AuthenticationService.authenticate(email, password);
         if(result.isPresent()){
