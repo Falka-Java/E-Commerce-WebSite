@@ -91,7 +91,7 @@ public class AuthServlet extends HttpServlet {
         }
     }
 
-    private void handleLogOutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void handleLogOutRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         session.invalidate(); //removes all sessions attributes bound to the session
 
@@ -105,12 +105,6 @@ public class AuthServlet extends HttpServlet {
 
     private void handleRegistrationRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         getFailedResultPage(request, response, "Registration failed!");
-    }
-
-    private void getHomePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("title", "- Homepage");
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../index.jsp");
-        dispatcher.forward(request, response);
     }
     private void getSuccessfulResultPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         request.setAttribute("title", "- Successful result");

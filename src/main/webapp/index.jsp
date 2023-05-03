@@ -32,6 +32,8 @@
         </button>
       </div>
     </div>
+  </div>
+</main>
     <!-- Jumbotron -->
 </header>
 
