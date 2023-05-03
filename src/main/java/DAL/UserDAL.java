@@ -136,13 +136,13 @@ public class UserDAL implements DAL<User> {
 
     /**
      * Method that updates user in the database
-     * @param user original user
+     * @param userId original user id
      * @param params new user parameters(name, surname, email, pw_hash)
      *               Possible to provide fewer parameters, than required
      * @return true if user was updated, false if not, can also return false if nothing was changed
      */
     @Override
-    public boolean update(User user, String[] params) {
+    public boolean update(int userId, String[] params) {
         boolean success = false;
         try {
             conn = DbProvider.getMySqlConnection();
@@ -154,11 +154,8 @@ public class UserDAL implements DAL<User> {
             for (int i = 0; i<params.length; i++){
                 pstmt.setString(i+1, params[i]);
             }
-            pstmt.setString(1, params[0]);
-            pstmt.setString(2, params[1]);
-            pstmt.setString(3, params[2]);
-            pstmt.setString(4, params[3]);
-            pstmt.setLong(5, user.getId());
+            pstmt.setLong(5, userId);
+
             int rowCount = pstmt.executeUpdate();
             if (rowCount != 0) success = true;
         } catch (SQLException ex) {

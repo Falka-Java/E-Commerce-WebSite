@@ -114,12 +114,12 @@ public class CategoryDAL implements DAL<Category> {
 
     /**
      * Method that will update category in the database
-     * @param category - category that will be updated
+     * @param categoryId - category id that will be updated
      * @param params - parameters that will be updated; params[0] - name
      * @return - true if category is updated, false otherwise
      */
     @Override
-    public boolean update(Category category, String[] params) {
+    public boolean update(int categoryId, String[] params) {
         boolean success = false;
         DbManager dbManager = new DbManager();
         try {
@@ -130,7 +130,7 @@ public class CategoryDAL implements DAL<Category> {
             dbManager.prepareStatement();
             //Setting parameters
             dbManager.getPstmt().setString(1, params[0]);
-            dbManager.getPstmt().setLong(2, category.getId());
+            dbManager.getPstmt().setLong(2, categoryId);
 
             int rowCount = dbManager.executeUpdate();
             if (rowCount != 0) success = true;
