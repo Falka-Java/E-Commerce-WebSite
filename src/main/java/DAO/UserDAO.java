@@ -93,14 +93,14 @@ public class UserDAO implements DAO<User> {
     /**
      * Method that updates user in the database
      *
-     * @param user   original user
+     * @param userId id of original user
      * @param params new user parameters(name, surname, email, pw_hash)
      *               Possible to provide fewer parameters, than required
      * @return true if user was updated, false if not, can also return false if nothing was changed
      */
     @Override
-    public boolean update(User user, String[] params) {
-        return userDAL.update(user, params);
+    public boolean update(int userId, String[] params) {
+        return userDAL.update(userId, params);
     }
 
     @Override

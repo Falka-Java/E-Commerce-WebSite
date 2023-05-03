@@ -11,7 +11,7 @@ public interface DAO<T> {
 
     boolean add(T t);
 
-    boolean update(T t, String[] params);
+    boolean update(int id, String[] params);
 
     boolean delete(T t);
 
