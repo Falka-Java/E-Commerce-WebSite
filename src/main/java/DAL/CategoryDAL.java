@@ -1,9 +1,5 @@
 package DAL;
-
-import data.DbProvider;
 import models.Category;
-import models.User;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
