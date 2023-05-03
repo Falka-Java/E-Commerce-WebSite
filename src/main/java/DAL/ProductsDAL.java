@@ -1,4 +1,5 @@
 package DAL;
+import models.Category;
 import models.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +18,28 @@ public class ProductsDAL implements DAL<Product> {
      */
     @Override
     public Optional<Product> get(long id) {
-        return Optional.empty();
+        Product result = null;
+        DbManager dbManager = new DbManager();
+        try {
+            dbManager.createConnection();
+            dbManager.setQuery("SELECT * FROM products WHERE id = ?");
+            dbManager.prepareStatement();
+            dbManager.getPstmt().setLong(1, id);
+
+            try (ResultSet res = dbManager.executeQuery()) {
+                List<Product> extractProducts = extractProducts(res);
+                if(extractProducts.size()>0)
+                    result = extractProducts.get(0);
+            }
+
+        }catch (SQLException ex) {
+            System.out.println("SQL-Exception -> " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
+        dbManager.closeAllConnections();
+        }
+            return Optional.empty();
     }
 
     /**
@@ -86,10 +108,11 @@ public class ProductsDAL implements DAL<Product> {
             double productPrice = res.getDouble("productPrice");
             int productQuantity = res.getInt("productQuantity");
             int dbCategoryId = res.getInt("categoryId");
+            boolean isFeatured = res.getBoolean("isFeatured");
 
             //Adding product to the list of products
             products.add(new models.Product(productId, name, description, productImagePath,
-                    productPrice, productQuantity, dbCategoryId));
+                    productPrice, productQuantity, dbCategoryId, isFeatured));
         }
         return products;
     }

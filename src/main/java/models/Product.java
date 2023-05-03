@@ -9,12 +9,14 @@ public class Product {
     private double productPrice;
     private int productQuantity;
     private int categoryId;
+
+    private boolean isFeatured;
     //endregion
 
     //region Constructors
 
     public Product(long id, String productName, String productDescription, String productImagePath,
-                   double productPrice, int productQuantity, int categoryId) {
+                   double productPrice, int productQuantity, int categoryId, boolean isFeatured) {
         this.id = id;
         this.productName = productName;
         this.productDescription = productDescription;
@@ -22,6 +24,18 @@ public class Product {
         this.productPrice = productPrice;
         this.productQuantity = productQuantity;
         this.categoryId = categoryId;
+        this.isFeatured = isFeatured;
+    }
+
+    public Product( String productName, String productDescription, String productImagePath,
+                   double productPrice, int productQuantity, int categoryId, boolean isFeatured) {
+        this.productName = productName;
+        this.productDescription = productDescription;
+        this.productImagePath = productImagePath;
+        this.productPrice = productPrice;
+        this.productQuantity = productQuantity;
+        this.categoryId = categoryId;
+        this.isFeatured = isFeatured;
     }
     public Product(){
 
@@ -85,6 +99,14 @@ public class Product {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public boolean isFeatured() {
+        return isFeatured;
+    }
+
+    public void setFeatured(boolean featured) {
+        isFeatured = featured;
     }
 
     //endregion
