@@ -5,6 +5,7 @@ import java.io.*;
 import DAL.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import models.Category;
 import models.User;
 
 @WebServlet(name = "test-servlet", value = "/test")
@@ -12,12 +13,14 @@ public class TestServlet extends HttpServlet {
     //region Private fields
     private String message;
     private final DAL<User> userDal;
+    private final DAL<Category> categoryDAL;
     //endregion
 
 
     //region Constructors&Init
     public TestServlet(){
         userDal = new UserDAL();
+        categoryDAL = new CategoryDAL();
     }
 
     public void init() {
@@ -35,6 +38,9 @@ public class TestServlet extends HttpServlet {
         out.println("<h1>" + message + "</h1>");
         for (User user : userDal.getAll()) {
             out.println("<h2>" + user + "</h2>");
+        }
+        for (Category category : categoryDAL.getAll()) {
+            out.println("<h2>" + category + "</h2>");
         }
 
         out.println("</body></html>");

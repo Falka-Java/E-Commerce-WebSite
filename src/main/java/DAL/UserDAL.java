@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+//Todo: Make UserDAL work with DbManager
 public class UserDAL implements DAL<User> {
     private Connection conn;
     private ResultSet res;
