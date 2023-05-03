@@ -102,8 +102,8 @@ public class ProductsDAL implements DAL<Product> {
         while (res.next()) {
             //Getting product from the result set
             long productId = res.getLong("id");
-            String name = res.getString("name");
-            String description = res.getString("description");
+            String name = res.getString("productName");
+            String description = res.getString("productDescription");
             String productImagePath = res.getString("productImagePath");
             double productPrice = res.getDouble("productPrice");
             int productQuantity = res.getInt("productQuantity");
