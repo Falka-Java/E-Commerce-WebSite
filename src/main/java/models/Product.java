@@ -5,7 +5,7 @@ public class Product {
     private long id;
     private String productName;
     private String productDescription;
-    private String productImage;
+    private String productImagePath;
     private double productPrice;
     private int productQuantity;
     private int categoryId;
@@ -13,12 +13,12 @@ public class Product {
 
     //region Constructors
 
-    public Product(long id, String productName, String productDescription, String productImage,
+    public Product(long id, String productName, String productDescription, String productImagePath,
                    double productPrice, int productQuantity, int categoryId) {
         this.id = id;
         this.productName = productName;
         this.productDescription = productDescription;
-        this.productImage = productImage;
+        this.productImagePath = productImagePath;
         this.productPrice = productPrice;
         this.productQuantity = productQuantity;
         this.categoryId = categoryId;
@@ -55,12 +55,12 @@ public class Product {
         this.productDescription = productDescription;
     }
 
-    public String getProductImage() {
-        return productImage;
+    public String getProductImagePath() {
+        return productImagePath;
     }
 
-    public void setProductImage(String productImage) {
-        this.productImage = productImage;
+    public void setProductImagePath(String productImagePath) {
+        this.productImagePath = productImagePath;
     }
 
     public double getProductPrice() {
