@@ -67,6 +67,9 @@ public class DbManager {
         res = pstmt.executeQuery();
         return res;
     }
+    public int executeUpdate() throws SQLException {
+        return pstmt.executeUpdate();
+    }
 
     public void closeAllConnections() {
         try {
