@@ -1,13 +1,18 @@
 package servlets;
 
+import DAL.ProductsDAL;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import models.Product;
+
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet(name = "main-servlet", urlPatterns = "")
 public class MainServlet extends HttpServlet {
+    ProductsDAL productsDAL = new ProductsDAL();
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
@@ -30,6 +35,9 @@ public class MainServlet extends HttpServlet {
 
     private void getHomePage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("title", "- Homepage");
+        List<Product> productList = productsDAL.getAllFeaturedProducts();
+        request.setAttribute("featured-products", productList);
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("index.jsp");
         dispatcher.forward(request, response);
     }
