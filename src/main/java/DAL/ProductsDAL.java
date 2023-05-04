@@ -1,5 +1,4 @@
 package DAL;
-import models.Category;
 import models.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,7 +38,7 @@ public class ProductsDAL implements DAL<Product> {
         } finally {
         dbManager.closeAllConnections();
         }
-            return Optional.empty();
+            return Optional.ofNullable(result);
     }
 
     /**
@@ -95,6 +94,32 @@ public class ProductsDAL implements DAL<Product> {
             dbManager.closeAllConnections();
         }
         return products;
+    }
+
+    /**
+     * Method that will return all products that are featured
+     * @return - list of featured products
+     */
+    public List<Product> getAllFeaturedProducts(){
+        List<Product> products = new LinkedList<>();
+        DbManager dbManager = new DbManager();
+        try {
+            dbManager.createConnection();
+            dbManager.setQuery("SELECT * FROM products WHERE isFeatured = 1");
+            dbManager.prepareStatement();
+
+            try (ResultSet res = dbManager.executeQuery()) {
+                products = extractProducts(res);
+            }
+        } catch (SQLException ex) {
+            System.out.println("SQL-Exception -> " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
+            dbManager.closeAllConnections();
+        }
+        return products;
+
     }
 
     private List<Product> extractProducts(ResultSet res) throws SQLException {
