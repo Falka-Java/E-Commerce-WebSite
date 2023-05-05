@@ -1,5 +1,8 @@
 <%@ page import="jakarta.servlet.http.Cookie" %>
 
+<link rel="stylesheet" href="${pageContext.request.contextPath}/pages/css/navbar-styling.css">
+
+
 <%
     //Check if user is logged in
     String user = (String) request.getSession().getAttribute("user-email");
@@ -46,7 +49,7 @@
                         <button class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center" type="submit">Logout</button>
                     </form>
                     <% } %>
-                    <a href="${pageContext.request.contextPath}/cart" class="ms-2 border rounded py-1 px-3 nav-link d-flex align-items-center" > <i class="fas fa-shopping-cart m-1 me-md-2"></i><p class="d-none d-md-block mb-0">My cart</p> </a>
+                    <a href="${pageContext.request.contextPath}/cart" class="ms-2 border rounded py-1 px-3 nav-link d-flex align-items-center" > <i class="fas fa-shopping-cart m-1 me-md-2"></i><p class="d-none d-md-block mb-0"> My cart <span class="numberCircle" id="cartCounter"></span></p> </a>
                 </div>
             </div>
             <!-- Center elements -->
@@ -126,3 +129,6 @@
     <!-- Container wrapper -->
 </nav>
 <!-- Navbar -->
+
+
+<%@include file="../js/cart-items-script.jsp" %>

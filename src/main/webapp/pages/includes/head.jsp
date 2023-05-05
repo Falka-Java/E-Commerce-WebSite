@@ -11,4 +11,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/pages/css/mdb.min.css" />
     <!-- Custom styles -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/pages/css/style.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 </head>

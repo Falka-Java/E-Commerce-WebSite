@@ -189,6 +189,7 @@
 <!-- Footer -->
 <%@include file="pages/includes/footer.jsp" %>
 
+
 </body>
 </html>
 
