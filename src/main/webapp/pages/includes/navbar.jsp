@@ -2,6 +2,7 @@
 <%@ page import="jakarta.servlet.http.Cookie" %>
 
 <%
+  //Check if user is logged in
   String user = (String)request.getSession().getAttribute("user-email");
   if(user==null){
     Cookie[] cookies = request.getCookies();
@@ -30,36 +31,21 @@
             data-mdb-target="#navbarLeftAlignExample"
             aria-controls="navbarLeftAlignExample"
             aria-expanded="false"
-            aria-label="Toggle navigation"
-    >
+            aria-label="Toggle navigation">
       <i class="fas fa-bars"></i>
     </button>
 
     <!-- Collapsible wrapper -->
     <div class="collapse navbar-collapse" id="navbarLeftAlignExample">
-      <!-- Left links -->
+      <!-- Left elements -->
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link text-dark" aria-current="page" href= "${pageContext.request.contextPath}/">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-dark" href="#">Categories</a>
+          <a class="nav-link text-dark" href="${pageContext.request.contextPath}/products">Products</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="#">Hot offers</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="#">Gift boxes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="#">Projects</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="#">Menu item</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="#">Menu name</a>
-        </li>
+
         <!-- Navbar dropdown -->
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
@@ -80,7 +66,9 @@
           </ul>
         </li>
       </ul>
-      <!-- Left links -->
+      <!-- End of left elements -->
+
+      <!-- Right elements -->
       <div class="d-flex align-items-center">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
@@ -109,6 +97,7 @@
 
         </ul>
       </div>
+      <!-- End of right elements -->
 
     </div>
   </div>

@@ -53,13 +53,13 @@ public class AuthServlet extends HttpServlet {
 
     private void getLoginPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("title", "- Login");
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../Views/Authentication/login.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/Authentication/login.jsp");
         dispatcher.forward(request, response);
     }
 
     private void getRegistrationPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("title", "- Registration");
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../Views/Authentication/registration.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/Authentication/registration.jsp");
         dispatcher.forward(request, response);
     }
 
@@ -139,24 +139,24 @@ public class AuthServlet extends HttpServlet {
     private void getSuccessfulResultPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         request.setAttribute("title", "- Successful result");
         request.setAttribute("message", message);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../Views/system-pages/successful.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/system-pages/successful.jsp");
         dispatcher.forward(request, response);
     }
     private void getFailedResultPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
         request.setAttribute("title", "- Operation failed");
         request.setAttribute("message", message);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../Views/system-pages/failed.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/system-pages/failed.jsp");
         dispatcher.forward(request, response);
     }
     private void get404Page(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("title", "- 404 Page not found");
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../Views/system-pages/404.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/system-pages/404.jsp");
         dispatcher.forward(request, response);
     }
 
     private void get400Page(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("title", "- 400 Bad request");
-        RequestDispatcher dispatcher = request.getRequestDispatcher("../Views/system-pages/400.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/system-pages/400.jsp");
         dispatcher.forward(request, response);
     }
 }

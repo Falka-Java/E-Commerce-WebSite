@@ -4,13 +4,13 @@
 <html lang="en">
 
 <!--Header-->
-<%@include file="/includes/head.jsp" %>
+<%@include file="pages/includes/head.jsp" %>
 <!--Header-->
 
 <body>
 <header>
     <!-- Navbar -->
-    <%@include file="/includes/navbar.jsp" %>
+    <%@include file="pages/includes/navbar.jsp" %>
     <!-- Navbar -->
 
     <main>
@@ -187,7 +187,7 @@
 
 
 <!-- Footer -->
-<%@include file="/includes/footer.jsp" %>
+<%@include file="pages/includes/footer.jsp" %>
 
 </body>
 </html>

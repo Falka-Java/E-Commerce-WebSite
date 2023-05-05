@@ -51,7 +51,7 @@ public class MainServlet extends HttpServlet {
     }
     private void get400Page(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("title", "- 400 Bad request");
-        RequestDispatcher dispatcher = request.getRequestDispatcher("views/system-pages/400.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("Views/system-pages/400.jsp");
         dispatcher.forward(request, response);
     }
 
