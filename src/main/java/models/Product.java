@@ -1,5 +1,8 @@
 package models;
 
+import java.util.Optional;
+import java.util.OptionalDouble;
+
 public class Product {
     //region Private fields
     private long id;
@@ -7,6 +10,7 @@ public class Product {
     private String productDescription;
     private String productImagePath;
     private double productPrice;
+    private OptionalDouble originalPrice;
     private int productQuantity;
     private int categoryId;
 
@@ -25,6 +29,7 @@ public class Product {
         this.productQuantity = productQuantity;
         this.categoryId = categoryId;
         this.isFeatured = isFeatured;
+        originalPrice = OptionalDouble.empty();
     }
 
     public Product( String productName, String productDescription, String productImagePath,
@@ -36,6 +41,7 @@ public class Product {
         this.productQuantity = productQuantity;
         this.categoryId = categoryId;
         this.isFeatured = isFeatured;
+        originalPrice = OptionalDouble.empty();
     }
     public Product(){
 
@@ -109,7 +115,14 @@ public class Product {
         isFeatured = featured;
     }
 
-    //endregion
+    public OptionalDouble getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(OptionalDouble originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+//endregion
 
 
     //region Overrides

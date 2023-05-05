@@ -2,10 +2,8 @@ package DAL;
 import models.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.sql.Types;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class ProductsDAL implements DAL<Product> {
@@ -131,13 +129,19 @@ public class ProductsDAL implements DAL<Product> {
             String description = res.getString("productDescription");
             String productImagePath = res.getString("productImagePath");
             double productPrice = res.getDouble("productPrice");
+            OptionalDouble originalPrice = OptionalDouble.empty();
+            if(res.getDouble("originalPrice") != 0)
+                originalPrice = OptionalDouble.of(res.getDouble("originalPrice"));
+
             int productQuantity = res.getInt("productQuantity");
             int dbCategoryId = res.getInt("categoryId");
             boolean isFeatured = res.getBoolean("isFeatured");
 
             //Adding product to the list of products
-            products.add(new models.Product(productId, name, description, productImagePath,
-                    productPrice, productQuantity, dbCategoryId, isFeatured));
+            Product product = new Product(productId, name, description, productImagePath,
+                    productPrice, productQuantity, dbCategoryId, isFeatured);
+            product.setOriginalPrice(originalPrice);
+            products.add(product);
         }
         return products;
     }
@@ -156,16 +160,21 @@ public class ProductsDAL implements DAL<Product> {
             dbManager.createConnection();
             //Sql query that add product to the database
             dbManager.setQuery("INSERT INTO products " +
-                    "(productName, productDescription, productImagePath, productPrice, productQuantity, categoryId) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)");
+                    "(productName, productDescription, productImagePath, productPrice, originalPrice, productQuantity, categoryId) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)");
             dbManager.prepareStatement();
             //Setting parameters for the query
             dbManager.getPstmt().setString(1, product.getProductName());
             dbManager.getPstmt().setString(2, product.getProductDescription());
             dbManager.getPstmt().setString(3, product.getProductImagePath());
             dbManager.getPstmt().setDouble(4, product.getProductPrice());
-            dbManager.getPstmt().setInt(5, product.getProductQuantity());
-            dbManager.getPstmt().setInt(6, product.getCategoryId());
+
+            if(product.getOriginalPrice().isPresent())
+                dbManager.getPstmt().setDouble(5, product.getOriginalPrice().getAsDouble());
+            else
+                dbManager.getPstmt().setNull(5, Types.DOUBLE);
+            dbManager.getPstmt().setInt(6, product.getProductQuantity());
+            dbManager.getPstmt().setInt(7, product.getCategoryId());
 
             //Executing query
             int rowsCount = dbManager.executeUpdate();
@@ -196,13 +205,22 @@ public class ProductsDAL implements DAL<Product> {
         try{
             dbManager.createConnection();
             dbManager.setQuery("UPDATE products SET productName = ?, productDescription = ?, productImagePath = ?, " +
-                    "productPrice = ?, productQuantity = ?, categoryId = ? WHERE id = ?");
+                    "productPrice = ?, originalPrice = ?, productQuantity = ?, categoryId = ? WHERE id = ?");
             dbManager.prepareStatement();
             //Setting parameters for the query
-            for(int i = 0; i<params.length; i++){
-                dbManager.getPstmt().setString(i+1, params[i]);
-            }
-            dbManager.getPstmt().setInt(7, productId);
+            dbManager.getPstmt().setString(1, params[0]);
+            dbManager.getPstmt().setString(2, params[1]);
+            dbManager.getPstmt().setString(3, params[3]);
+            dbManager.getPstmt().setDouble(4, Double.parseDouble(params[4]));
+            if(params[5]!=null)
+                dbManager.getPstmt().setDouble(5, Double.parseDouble(params[5]));
+            else
+                dbManager.getPstmt().setNull(5, Types.DOUBLE);
+
+            dbManager.getPstmt().setInt(6, Integer.parseInt(params[6]));
+            dbManager.getPstmt().setInt(7, Integer.parseInt(params[7]));
+
+            dbManager.getPstmt().setInt(8, productId);
 
             int rowsCount = dbManager.executeUpdate();
             if(rowsCount > 0) success = true;
