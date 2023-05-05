@@ -80,8 +80,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                                 <% }%>
                                 <%--                                <div class="col-lg-4 col-md-6 col-sm-6 d-flex">--%>
                                 <%--                                    <div class="card w-100 my-2 shadow-2-strong">--%>

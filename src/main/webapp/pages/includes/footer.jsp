@@ -101,3 +101,5 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/pages/js/mdb.min.js"></script>
 <!-- Custom scripts -->
 <script type="text/javascript" src="${pageContext.request.contextPath}/pages/js/script.js"></script>
+
+<script src="https://kit.fontawesome.com/c350deed4c.js" crossorigin="anonymous"></script>
