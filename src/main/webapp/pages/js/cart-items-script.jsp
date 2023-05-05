@@ -23,6 +23,12 @@ updateCartCounter = function (){
     });
 
 }
+updateButtonStyle = function (buttonId){
+    $("#"+buttonId).removeClass("btn-primary");
+    $("#"+buttonId).removeClass("btn-outline-primary");
+    $("#"+buttonId).addClass("btn-secondary");
+}
+
 $(document).ready(function() {
     updateCartCounter();
 })

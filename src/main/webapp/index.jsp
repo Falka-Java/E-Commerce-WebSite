@@ -60,9 +60,7 @@
                         <h5 class="card-title"><%= product.getProductName() %></h5>
                         <p class="card-text">$<%= product.getProductPrice() %></p>
                         <div class="card-footer d-flex align-items-end pt-3 px-0 pb-0 mt-auto">
-                            <a href="#!" class="btn btn-primary shadow-0 me-1">Add to cart</a>
-                            <a href="#!" class="btn btn-light border px-2 pt-2 icon-hover"><i
-                                    class="fas fa-heart fa-lg text-secondary px-1"></i></a>
+                            <a onclick="addItemToCart(<% out.print(product.getId()); %>); updateButtonStyle('addItem-<% out.print(product.getId()); %>');" id="addItem-<% out.print(product.getId()); %>" class="btn btn-primary shadow-0 me-1">Add to cart</a>
                         </div>
                     </div>
                 </div>
