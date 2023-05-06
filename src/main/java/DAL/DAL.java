@@ -11,8 +11,11 @@ public interface DAL<T> {
 
     boolean add(T t);
 
+    //Todo: change String[] params to T t
     boolean update(int id, String[] params);
 
+
+    //Todo: change to int id
     boolean delete(T t);
     List<T> search(Predicate<T> filter);
 }

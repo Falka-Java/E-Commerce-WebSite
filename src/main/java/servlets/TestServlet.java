@@ -6,6 +6,7 @@ import DAL.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import models.Category;
+import models.Order;
 import models.Product;
 import models.User;
 
@@ -16,6 +17,7 @@ public class TestServlet extends HttpServlet {
     private final DAL<User> userDal;
     private final DAL<Category> categoryDAL;
     private final DAL<Product> productDAL;
+    private final DAL<Order> ordersDAL;
     //endregion
 
 
@@ -24,6 +26,7 @@ public class TestServlet extends HttpServlet {
         userDal = new UserDAL();
         categoryDAL = new CategoryDAL();
         productDAL = new ProductsDAL();
+        ordersDAL = new OrdersDAL();
     }
 
     public void init() {
@@ -48,6 +51,10 @@ public class TestServlet extends HttpServlet {
 
         for (Product product : productDAL.getAll()) {
             out.println("<h2>" + product + "</h2>");
+        }
+
+        for (Order order : ordersDAL.getAll()) {
+            out.println("<h2>" + order + "</h2>");
         }
 
         out.println("</body></html>");
