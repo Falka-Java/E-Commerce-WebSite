@@ -47,11 +47,11 @@
                                             </div>
                                             <div class="col-lg-2 col-sm-6 col-6 ">
                                                 <div class="form-outline">
-                                                    <input min="0" max="20" type="number" id="typeNumber"
+                                                    <input min="0" max="20" type="number" id="amountInput-<%=product.getProduct().getId()%>"
                                                            class="form-control" value="<%=product.getQuantity()%>"/>
-                                                    <label class="form-label" for="typeNumber">Amount</label>
+                                                    <label class="form-label" for="amountInput-<%=product.getProduct().getId()%>">Amount</label>
                                                 </div>
-                                                <a href="#"
+                                                <a onclick="changeAmount(<%=product.getProduct().getId()%>)"
                                                     class="btn btn-secondary border icon-hover-danger mt-3">
                                                     Apply</a>
                                             </div>
@@ -69,7 +69,7 @@
                                                 </div>
 
                                                 <div class="float-md-end me-4">
-                                                    <a href="#"
+                                                    <a onclick="deleteFromCart(<%=product.getProduct().getId()%>)"
                                                        class="btn btn-light border text-danger icon-hover-danger">
                                                         Remove</a>
                                                 </div>

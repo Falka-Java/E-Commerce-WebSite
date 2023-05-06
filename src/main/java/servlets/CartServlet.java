@@ -52,6 +52,8 @@ public class CartServlet extends HttpServlet {
         try {
             if (path.equals("/addproduct"))
                 handleAddProductToCartRequest(request, response);
+            else if(path.equals("/setproductscount"))
+                setProductsCount(request, response);
             else
                 response.sendError(404);
         } catch (Exception ex) {
@@ -89,6 +91,34 @@ private List<SessionProduct> getCartFromSession(HttpSession session){
         cart = (List<SessionProduct>) session.getAttribute("cart");
     return cart;
 }
+
+    private void setProductsCount(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        List<SessionProduct> cart = getCartFromSession(session);
+
+        int productId = Integer.parseInt(request.getParameter("id"));
+        int newAmount = Integer.parseInt(request.getParameter("amount"));
+
+        if(newAmount < 0 || newAmount > 20) {
+            response.sendError(400);
+            return;
+        }
+
+        if(newAmount == 0){
+            cart.removeIf(sessionProduct -> sessionProduct.getProductId() == productId);
+            session.setAttribute("cart", cart);
+            response.setStatus(200);
+            return;
+        }
+
+        for (SessionProduct sessionProduct : cart)
+            if(sessionProduct.getProductId() == productId)
+                sessionProduct.setQuantity(newAmount);
+
+
+        session.setAttribute("cart", cart);
+        response.setStatus(200);
+    }
 
     private void getProductsCount(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
