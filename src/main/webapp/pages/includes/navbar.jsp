@@ -49,7 +49,10 @@
                         <button class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center" type="submit">Logout</button>
                     </form>
                     <% } %>
-                    <a href="${pageContext.request.contextPath}/cart" class="ms-2 border rounded py-1 px-3 nav-link d-flex align-items-center" > <i class="fas fa-shopping-cart m-1 me-md-2"></i><p class="d-none d-md-block mb-0"> My cart <span class="numberCircle" id="cartCounter"></span></p> </a>
+                    <a href="${pageContext.request.contextPath}/cart" class="ms-2 border rounded py-1 px-3 nav-link d-flex align-items-center" > <i class="fas fa-shopping-cart m-1 me-md-2"></i><p class="d-none d-md-block mb-0">
+                        <span class="badge rounded-pill badge-notification bg-success" id="cartCounter"></span>
+                        <span class="ms-2"> My cart</span> </p> </a>
+<%--                    <span class="numberCircle" id="cartCounter"></span>--%>
                 </div>
             </div>
             <!-- Center elements -->
