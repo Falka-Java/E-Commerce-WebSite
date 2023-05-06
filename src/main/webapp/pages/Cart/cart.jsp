@@ -119,7 +119,7 @@
                                         <% if (userEmail == null) { %>
                                         <a href="#" class="btn btn-secondary w-100 shadow-0 mb-2 disabled"> Register to proceed </a>
                                         <%}else{%>
-                                        <a href="#" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
+                                        <a href="${pageContext.request.contextPath}/cart/checkout" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
                                         <%}%>
 
                                         <a href="${pageContext.request.contextPath}/products/"

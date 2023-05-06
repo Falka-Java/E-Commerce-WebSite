@@ -141,12 +141,24 @@ public class CartServlet extends HttpServlet {
     //region GetPages
 
     private void getCheckoutPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("title", "- checkout");
-        HttpSession session = request.getSession(true);
+        request.setAttribute("title", "checkout");
+
+
 
         User user = null;
-        String userEmail = (String)session.getAttribute("session-user-email");
-        if (user == null) {
+        String userEmail = null;
+
+        HttpSession session = request.getSession(false);
+            if(session==null){
+                //Cart is empty
+                request.setAttribute("isEmpty", true);
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/Cart/checkout.jsp");
+                dispatcher.forward(request, response);
+                return;
+            }
+
+        userEmail = (String)session.getAttribute("session-user-email");
+        if (userEmail == null) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
@@ -163,7 +175,8 @@ public class CartServlet extends HttpServlet {
             return;
         }
         user = optionalUser.get();
-        request.setAttribute("user", user);
+        request.setAttribute("current-user", user);
+
 
 
 
@@ -187,6 +200,7 @@ public class CartServlet extends HttpServlet {
 
         request.setAttribute("total-price", totalPrice);
         request.setAttribute("discount", discount);
+
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/Cart/checkout.jsp");
         dispatcher.forward(request, response);
