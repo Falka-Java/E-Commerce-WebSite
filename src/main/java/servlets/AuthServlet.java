@@ -38,15 +38,13 @@ public class AuthServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String path = request.getPathInfo();
-        if(path.equals("/login")){
+        if (path.equals("/login")) {
             handleLoginRequest(request, response);
-        }else if(path.equals("/registration")){
+        } else if (path.equals("/registration")) {
             handleRegistrationRequest(request, response);
-        }else if(path.equals("/logout")){
+        } else if (path.equals("/logout")) {
             handleLogOutRequest(request, response);
-        }
-
-        else{
+        } else {
             get404Page(request, response);
         }
     }
@@ -66,28 +64,28 @@ public class AuthServlet extends HttpServlet {
     private void handleLoginRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String email = request.getParameter("emailInput");
         String password = request.getParameter("passwordInput");
-        if(email == null || password == null) {
-            getFailedResultPage(request, response, "Email or password is not provided!");
+        if (email == null || password == null) {
+            getFailedResultPage(request, response, "Email or password is not provided!", "Auth/registration");
             return;
         }
         String rememberMeInput = request.getParameter("rememberMeCheckBox");
         boolean rememberMe = rememberMeInput != null;
 
         Optional<User> result = AuthenticationService.authenticate(email, password);
-        if(result.isPresent()){
+        if (result.isPresent()) {
             HttpSession session = request.getSession(true);
             session.setAttribute("user-email", result.get().getEmail());
 
-            if(rememberMe) {
+            if (rememberMe) {
                 Cookie cookie = new Cookie("user-email", result.get().getEmail());
-                cookie.setMaxAge(3600* 24); // 1 day
+                cookie.setMaxAge(3600 * 24); // 1 day
                 response.addCookie(cookie);
             }
 
             getSuccessfulResultPage(request, response, "Login successful!");
 
-        }else {
-            getFailedResultPage(request, response, "Email or password is incorrect!");
+        } else {
+            getFailedResultPage(request, response, "Email or password is incorrect!","Auth/login");
         }
     }
 
@@ -112,12 +110,12 @@ public class AuthServlet extends HttpServlet {
         String repeatPasswordInput = request.getParameter("repeatPasswordInput");
 
         //Validating data
-        if(nameInput == null || surnameInput == null || emailInput == null || passwordInput == null || repeatPasswordInput == null) {
-            getFailedResultPage(request, response, "One or more fields are not provided!");
+        if (nameInput == null || surnameInput == null || emailInput == null || passwordInput == null || repeatPasswordInput == null) {
+            getFailedResultPage(request, response, "One or more fields are not provided!", "Auth/registration");
             return;
         }
-        if(!passwordInput.equals(repeatPasswordInput)) {
-            getFailedResultPage(request, response, "Passwords do not match!");
+        if (!passwordInput.equals(repeatPasswordInput)) {
+            getFailedResultPage(request, response, "Passwords do not match!", "Auth/registration");
             return;
         }
 
@@ -125,29 +123,34 @@ public class AuthServlet extends HttpServlet {
         String registrationResult = AuthenticationService.register(nameInput, surnameInput, emailInput, passwordInput);
 
         //Checking if registration was successful
-        if(registrationResult == null) {
+        if (registrationResult == null) {
             //Logging user in
             HttpSession session = request.getSession(true);
             session.setAttribute("user-email", emailInput);
 
             //Returning successful result page
             getSuccessfulResultPage(request, response, "Registration successful!");
-        }
-        else
-            getFailedResultPage(request, response, registrationResult);
+        } else
+            getFailedResultPage(request, response, registrationResult, "Auth/registration");
     }
-    private void getSuccessfulResultPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+
+    private void getSuccessfulResultPage(HttpServletRequest request, HttpServletResponse response,
+                                         String message) throws ServletException, IOException {
         request.setAttribute("title", "- Successful result");
         request.setAttribute("message", message);
         RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/system-pages/successful.jsp");
         dispatcher.forward(request, response);
     }
-    private void getFailedResultPage(HttpServletRequest request, HttpServletResponse response, String message) throws ServletException, IOException {
+
+    private void getFailedResultPage(HttpServletRequest request, HttpServletResponse response, String message,
+                                     String returnLink) throws ServletException, IOException {
         request.setAttribute("title", "- Operation failed");
         request.setAttribute("message", message);
+        request.setAttribute("returnLink", returnLink);
         RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/system-pages/failed.jsp");
         dispatcher.forward(request, response);
     }
+
     private void get404Page(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("title", "- 404 Page not found");
         RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/system-pages/404.jsp");

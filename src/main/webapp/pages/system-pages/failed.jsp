@@ -20,7 +20,7 @@
                 </div>
                 <div class="d-flex align-items-center justify-content-center">
                     <a href="<%= request.getContextPath() %>" class="btn btn-secondary">Homepage</a>
-                    <a href="<%= request.getContextPath() %>/Auth/login" class="btn btn-primary ms-2">Retry</a>
+                    <a href="<%= request.getContextPath() %>/${returnLink}" class="btn btn-primary ms-2">Retry</a>
                 </div>
             </div>
         </div>
