@@ -108,6 +108,11 @@ public class OrdersServlet extends HttpServlet {
             request.setAttribute("error", "Something went wrong, please try again later");
         }
 
+        request.setAttribute("firstName", firstName);
+        request.setAttribute("lastName", lastName);
+        request.setAttribute("date", utilDate.toString());
+        request.setAttribute("totalPrice", totalPrice);
+
         request.setAttribute("cart-products", cartProducts);
 
         getInvoicePage(request, response);

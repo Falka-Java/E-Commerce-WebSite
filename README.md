@@ -6,7 +6,7 @@ E-Commerce website written on Java using Jakarta Servlet
 - [x] Login / Registration
 - [x] Products list
 - [x] Cart
-- [ ] Order products
+- [x] Order products
 - [ ] Orders history
 - Admin panel
 - [ ] User roles
