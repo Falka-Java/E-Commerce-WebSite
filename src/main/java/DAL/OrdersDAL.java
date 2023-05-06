@@ -1,14 +1,18 @@
 package DAL;
 
 import models.Order;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Predicate;
 
 public class OrdersDAL implements DAL<Order> {
+    private long lastAddedOrderId = -1;
+
     /**
      * Method that gets order by id
+     *
      * @param id id of order
      * @return order
      */
@@ -40,6 +44,7 @@ public class OrdersDAL implements DAL<Order> {
 
     /**
      * Method that gets all orders from database
+     *
      * @return list of orders
      */
     @Override
@@ -66,6 +71,7 @@ public class OrdersDAL implements DAL<Order> {
 
     /**
      * Method that adds order to database
+     *
      * @param order order to add
      * @return true if order was added successfully, false otherwise
      */
@@ -77,11 +83,11 @@ public class OrdersDAL implements DAL<Order> {
             dbManager.createConnection();
             //Sql query that add product to the database
             dbManager.setQuery("INSERT INTO orders" +
-                    " (userId, creationDate, userFirstName, userLastName, address1, address2, country, state, zip, totalSum, status)" +
-                    " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ");
-            dbManager.prepareStatement();
+                    " (id, userId, creationDate, userFirstName, userLastName, address1, address2, country, state, zip, totalSum, status)" +
+                    " VALUES (null, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            dbManager.prepareStatementWithKey();
             //Setting parameters for the query
-            dbManager.getPstmt().setInt(1, order.getUserId());
+            dbManager.getPstmt().setLong(1, order.getUserId());
             Date creatingDate = order.getCreationDate();
             java.sql.Date sqlDate = new java.sql.Date(creatingDate.getTime());
             dbManager.getPstmt().setDate(2, sqlDate);
@@ -96,9 +102,24 @@ public class OrdersDAL implements DAL<Order> {
             dbManager.getPstmt().setString(11, order.getStatus());
 
 
+
             //Executing query
             int rowsCount = dbManager.executeUpdate();
-            if (rowsCount > 0) success = true;
+
+            //Getting generated id
+            try (ResultSet generatedKeys = dbManager.getPstmt().getGeneratedKeys()) {
+                if (generatedKeys.next())
+                    lastAddedOrderId = generatedKeys.getInt(1);
+                else {
+                    success = false;
+                    throw new SQLException("Creating order failed, no ID obtained.");
+                }
+
+            }
+
+            if (rowsCount > 0) {
+                success = true;
+            }
 
         } catch (SQLException ex) {
             System.out.println("SQL-Exception -> " + ex.getMessage());
@@ -112,28 +133,30 @@ public class OrdersDAL implements DAL<Order> {
 
     /**
      * Method that adds order to the database with products
-     * @param order order to add
+     *
+     * @param order       order to add
      * @param productsIds list of products ids
      * @return true if order was added successfully, false otherwise
      */
     public boolean addWithProducts(Order order, List<Integer> productsIds) {
         boolean success;
         success = add(order);
-        if(!success) return false;
+        if (!success) return false;
+
 
         DbManager dbManager = new DbManager();
         try {
             dbManager.createConnection();
             for (Integer productId : productsIds) {
-                 dbManager.setQuery("INSERT INTO orders_products" +
+                dbManager.setQuery("INSERT INTO orders_products" +
                         " (orderId, productId)" +
                         " VALUES (?, ?) ");
                 dbManager.prepareStatement();
                 //Setting parameters for the query
-                dbManager.getPstmt().setLong(1, order.getId());
+                dbManager.getPstmt().setLong(1, lastAddedOrderId);
                 dbManager.getPstmt().setInt(2, productId);
                 int rowsCount = dbManager.executeUpdate();
-                if(rowsCount == 0)
+                if (rowsCount == 0)
                     success = false;
             }
 
@@ -154,7 +177,7 @@ public class OrdersDAL implements DAL<Order> {
     public boolean update(int id, String[] params) {
         boolean success = false;
         DbManager dbManager = new DbManager();
-        try{
+        try {
             dbManager.createConnection();
             dbManager.setQuery("UPDATE orders SET" +
                     " userId = ?, creationDate = ?, userFirstName = ? , userLastName = ?, address1 = ?," +
@@ -177,9 +200,9 @@ public class OrdersDAL implements DAL<Order> {
             dbManager.getPstmt().setInt(12, id); //id
 
             int rowsCount = dbManager.executeUpdate();
-            if(rowsCount > 0) success = true;
+            if (rowsCount > 0) success = true;
 
-        }catch (SQLException ex) {
+        } catch (SQLException ex) {
             System.out.println("SQL-Exception -> " + ex.getMessage());
         } catch (ClassNotFoundException ex) {
             System.out.println("Class not found exception -> " + ex.getMessage());
@@ -192,6 +215,7 @@ public class OrdersDAL implements DAL<Order> {
 
     /**
      * Method that deletes order from database
+     *
      * @param order order to delete
      * @return true if order was deleted successfully, false otherwise
      */
@@ -224,6 +248,7 @@ public class OrdersDAL implements DAL<Order> {
 
     /**
      * Method that searches for orders in the database
+     *
      * @param filter predicate to apply
      * @return list of orders that satisfy the predicate
      */

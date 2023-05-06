@@ -1,6 +1,9 @@
 package services;
 
 import DAO.UserDAO;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import models.User;
 
 import java.util.Optional;
@@ -34,6 +37,24 @@ public class AuthenticationService {
 
     public static String register(String firstName, String lastName, String email, String password) {
         return userDAO.add(firstName, lastName, email, password);
+    }
+
+    public static Optional<User> getAuthenticatedUser(HttpServletRequest request, HttpSession session){
+
+        String userEmail = (String)session.getAttribute("session-user-email");
+        if (userEmail == null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("user-email")) {
+                        userEmail = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+        return userDAO.getByEmail(userEmail);
+
     }
 
 }

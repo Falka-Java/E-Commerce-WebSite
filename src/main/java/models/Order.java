@@ -6,7 +6,7 @@ public class Order {
     //region Private Fields
 
     private long id;
-    private int userId;
+    private long userId;
     private Date creationDate;
     private String userFirstName;
     private String userLastName;
@@ -41,6 +41,22 @@ public class Order {
         this.status = status;
     }
 
+    public Order(long userId, Date creationDate, String userFirstName, String userLastName,
+                 String address1, String address2, String country,
+                 String state, int zip, double totalSum, String status) {
+        this.userId = userId;
+        this.creationDate = creationDate;
+        this.userFirstName = userFirstName;
+        this.userLastName = userLastName;
+        this.address1 = address1;
+        this.address2 = address2;
+        this.country = country;
+        this.state = state;
+        this.zip = zip;
+        this.totalSum = totalSum;
+        this.status = status;
+    }
+
     //endregion
 
     //region Getters and Setters
@@ -53,11 +69,11 @@ public class Order {
         this.id = id;
     }
 
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

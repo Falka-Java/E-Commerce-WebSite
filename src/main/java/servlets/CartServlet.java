@@ -143,8 +143,6 @@ public class CartServlet extends HttpServlet {
     private void getCheckoutPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("title", "checkout");
 
-
-
         User user = null;
         String userEmail = null;
 

@@ -63,6 +63,10 @@ public class DbManager {
         this.pstmt = conn.prepareStatement(query);
     }
 
+    public void prepareStatementWithKey() throws SQLException {
+        this.pstmt = conn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+    }
+
     public ResultSet executeQuery() throws SQLException {
         res = pstmt.executeQuery();
         return res;
