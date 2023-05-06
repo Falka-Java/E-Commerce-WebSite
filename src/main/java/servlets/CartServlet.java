@@ -1,16 +1,15 @@
 package servlets;
 
 import DAL.ProductsDAL;
+import DAO.UserDAO;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import models.CartProduct;
 import models.Product;
 import models.SessionProduct;
+import models.User;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,6 +23,7 @@ import java.util.stream.Collectors;
 public class CartServlet extends HttpServlet {
 
     ProductsDAL productsDAL = new ProductsDAL();
+    UserDAO userDAO = new UserDAO();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -35,6 +35,9 @@ public class CartServlet extends HttpServlet {
             case "default":
                 getCartPage(request, response);
                 break;
+            case "/checkout":
+                getCheckoutPage(request, response);
+                break;
             case "/getproductscount":
                 getProductsCount(request, response);
                 break;
@@ -45,14 +48,13 @@ public class CartServlet extends HttpServlet {
     }
 
 
-
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String path = request.getPathInfo();
         try {
             if (path.equals("/addproduct"))
                 handleAddProductToCartRequest(request, response);
-            else if(path.equals("/setproductscount"))
+            else if (path.equals("/setproductscount"))
                 setProductsCount(request, response);
             else
                 response.sendError(404);
@@ -71,26 +73,25 @@ public class CartServlet extends HttpServlet {
 
         boolean added = false;
         for (SessionProduct sessionProduct : cart) {
-            if (sessionProduct.getProductId()== productId) {
-                sessionProduct.setQuantity(sessionProduct.getQuantity()+1);
-                added=true;
+            if (sessionProduct.getProductId() == productId) {
+                sessionProduct.setQuantity(sessionProduct.getQuantity() + 1);
+                added = true;
                 break;
             }
         }
 
-        if(!added)
+        if (!added)
             cart.add(new SessionProduct(productId, 1));
 
         session.setAttribute("cart", cart);
         response.setStatus(200);
     }
-
-private List<SessionProduct> getCartFromSession(HttpSession session){
-    List<SessionProduct> cart = new LinkedList<>();
-    if (session.getAttribute("cart") != null && session.getAttribute("cart") instanceof List)
-        cart = (List<SessionProduct>) session.getAttribute("cart");
-    return cart;
-}
+    private List<SessionProduct> getCartFromSession(HttpSession session) {
+        List<SessionProduct> cart = new LinkedList<>();
+        if (session.getAttribute("cart") != null && session.getAttribute("cart") instanceof List)
+            cart = (List<SessionProduct>) session.getAttribute("cart");
+        return cart;
+    }
 
     private void setProductsCount(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
@@ -99,12 +100,12 @@ private List<SessionProduct> getCartFromSession(HttpSession session){
         int productId = Integer.parseInt(request.getParameter("id"));
         int newAmount = Integer.parseInt(request.getParameter("amount"));
 
-        if(newAmount < 0 || newAmount > 20) {
+        if (newAmount < 0 || newAmount > 20) {
             response.sendError(400);
             return;
         }
 
-        if(newAmount == 0){
+        if (newAmount == 0) {
             cart.removeIf(sessionProduct -> sessionProduct.getProductId() == productId);
             session.setAttribute("cart", cart);
             response.setStatus(200);
@@ -112,7 +113,7 @@ private List<SessionProduct> getCartFromSession(HttpSession session){
         }
 
         for (SessionProduct sessionProduct : cart)
-            if(sessionProduct.getProductId() == productId)
+            if (sessionProduct.getProductId() == productId)
                 sessionProduct.setQuantity(newAmount);
 
 
@@ -126,7 +127,7 @@ private List<SessionProduct> getCartFromSession(HttpSession session){
 
         int count = 0;
         for (SessionProduct sessionProduct : cart)
-             count += sessionProduct.getQuantity();
+            count += sessionProduct.getQuantity();
 
         String jsonResult = "{\"count\": " + count + "}";
         PrintWriter out = response.getWriter();
@@ -134,6 +135,62 @@ private List<SessionProduct> getCartFromSession(HttpSession session){
         response.setCharacterEncoding("UTF-8");
         out.print(jsonResult);
         out.flush();
+
+    }
+
+    //region GetPages
+
+    private void getCheckoutPage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("title", "- checkout");
+        HttpSession session = request.getSession(true);
+
+        User user = null;
+        String userEmail = (String)session.getAttribute("session-user-email");
+        if (user == null) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("user-email")) {
+                        userEmail = cookie.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+        Optional<User> optionalUser = userDAO.getByEmail(userEmail);
+        if(!optionalUser.isPresent()){
+            response.sendError(401);
+            return;
+        }
+        user = optionalUser.get();
+        request.setAttribute("user", user);
+
+
+
+        List<SessionProduct> sessionCart = getCartFromSession(session);
+        List<CartProduct> cartProducts = new LinkedList<>();
+        double totalPrice = 0;
+        double discount = 0;
+        for (SessionProduct product : sessionCart) {
+            Optional<Product> optionalProduct = productsDAL.get(product.getProductId());
+            if (optionalProduct.isPresent()) {
+                cartProducts.add(new CartProduct(optionalProduct.get(), product.getQuantity()));
+                totalPrice += optionalProduct.get().getProductPrice() * product.getQuantity();
+                if (optionalProduct.get().getOriginalPrice().isPresent()) {
+                    discount += (optionalProduct.get().getOriginalPrice().getAsDouble() - optionalProduct.get().getProductPrice()) * product.getQuantity();
+                }
+            }
+        }
+
+        request.setAttribute("cart-products", cartProducts);
+
+
+        request.setAttribute("total-price", totalPrice);
+        request.setAttribute("discount", discount);
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/Cart/checkout.jsp");
+        dispatcher.forward(request, response);
+
 
     }
 
@@ -152,10 +209,10 @@ private List<SessionProduct> getCartFromSession(HttpSession session){
         double discount = 0;
         for (SessionProduct product : sessionCart) {
             Optional<Product> optionalProduct = productsDAL.get(product.getProductId());
-            if(optionalProduct.isPresent()) {
+            if (optionalProduct.isPresent()) {
                 cartProducts.add(new CartProduct(optionalProduct.get(), product.getQuantity()));
                 totalPrice += optionalProduct.get().getProductPrice() * product.getQuantity();
-                if(optionalProduct.get().getOriginalPrice().isPresent()){
+                if (optionalProduct.get().getOriginalPrice().isPresent()) {
                     discount += (optionalProduct.get().getOriginalPrice().getAsDouble() - optionalProduct.get().getProductPrice()) * product.getQuantity();
                 }
             }
@@ -172,4 +229,7 @@ private List<SessionProduct> getCartFromSession(HttpSession session){
         RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/Cart/cart.jsp");
         dispatcher.forward(request, response);
     }
+
+    //endregion
+
 }

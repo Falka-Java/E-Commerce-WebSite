@@ -74,11 +74,12 @@ public class AuthServlet extends HttpServlet {
         Optional<User> result = AuthenticationService.authenticate(email, password);
         if (result.isPresent()) {
             HttpSession session = request.getSession(true);
-            session.setAttribute("user-email", result.get().getEmail());
+            session.setAttribute("session-user-email", result.get().getEmail());
 
             if (rememberMe) {
                 Cookie cookie = new Cookie("user-email", result.get().getEmail());
                 cookie.setMaxAge(3600 * 24); // 1 day
+                cookie.setPath(request.getContextPath()+"/");
                 response.addCookie(cookie);
             }
 
@@ -94,9 +95,17 @@ public class AuthServlet extends HttpServlet {
         session.invalidate(); //removes all sessions attributes bound to the session
 
         //Deleting cookies
-        Cookie userNameCookieRemove = new Cookie("user-email", "");
-        userNameCookieRemove.setMaxAge(0);
-        response.addCookie(userNameCookieRemove);
+
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("user-email")) {
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
+                }
+            }
+        }
         //Returning home page
         response.sendRedirect(request.getContextPath());
     }
@@ -126,7 +135,7 @@ public class AuthServlet extends HttpServlet {
         if (registrationResult == null) {
             //Logging user in
             HttpSession session = request.getSession(true);
-            session.setAttribute("user-email", emailInput);
+            session.setAttribute("session-user-email", emailInput);
 
             //Returning successful result page
             getSuccessfulResultPage(request, response, "Registration successful!");

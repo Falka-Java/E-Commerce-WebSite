@@ -5,23 +5,23 @@
 
 <%
     //Check if user is logged in
-    String user = (String) request.getSession().getAttribute("user-email");
+    String userEmail = (String) request.getSession().getAttribute("session-user-email");
     String userName = null;
-    if (user == null) {
+    if (userEmail == null) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("user-email")) {
-                    user = cookie.getValue();
+                    userEmail = cookie.getValue();
                     break;
                 }
             }
         }
     }
-    if(user!=null)
-        userName = user.split("@")[0];
+    if(userEmail!=null)
+        userName = userEmail.split("@")[0];
 
-    pageContext.setAttribute("user-email", user);
+    pageContext.setAttribute("user-email", userEmail);
 
 %>
 
@@ -39,7 +39,7 @@
             <!-- Center elements -->
             <div class="order-lg-last col-lg-5 col-sm-8 col-8">
                 <div class="d-flex float-end">
-                    <% if (user == null) { %>
+                    <% if (userEmail == null) { %>
                     <a href="<%= request.getContextPath() %>/Auth/login" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-user-alt m-1 me-md-2"></i><p class="d-none d-md-block mb-0">Sign in</p> </a>
                     <% } else { %>
                     <a class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center" href="Auth?page=profile">
