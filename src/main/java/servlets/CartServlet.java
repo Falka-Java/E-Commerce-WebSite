@@ -8,12 +8,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import models.CartProduct;
 import models.Product;
+import models.SessionProduct;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -62,25 +65,40 @@ public class CartServlet extends HttpServlet {
         int productId = Integer.parseInt(bodyProductId);
 
         HttpSession session = request.getSession(true);
-        List<Integer> cart = new LinkedList<>();
-        if (session.getAttribute("cart") != null && session.getAttribute("cart") instanceof List)
-            cart = (List<Integer>) session.getAttribute("cart");
+        List<SessionProduct> cart = getCartFromSession(session);
 
-        cart.add(productId);
+        boolean added = false;
+        for (SessionProduct sessionProduct : cart) {
+            if (sessionProduct.getProductId()== productId) {
+                sessionProduct.setQuantity(sessionProduct.getQuantity()+1);
+                added=true;
+                break;
+            }
+        }
+
+        if(!added)
+            cart.add(new SessionProduct(productId, 1));
+
         session.setAttribute("cart", cart);
         response.setStatus(200);
     }
 
+private List<SessionProduct> getCartFromSession(HttpSession session){
+    List<SessionProduct> cart = new LinkedList<>();
+    if (session.getAttribute("cart") != null && session.getAttribute("cart") instanceof List)
+        cart = (List<SessionProduct>) session.getAttribute("cart");
+    return cart;
+}
 
     private void getProductsCount(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
+        List<SessionProduct> cart = getCartFromSession(session);
 
-        List<Integer> cart = new LinkedList<>();
-        if (session.getAttribute("cart") != null && session.getAttribute("cart") instanceof List)
-            cart = (List<Integer>) session.getAttribute("cart");
-        cart.size();
+        int count = 0;
+        for (SessionProduct sessionProduct : cart)
+             count += sessionProduct.getQuantity();
 
-        String jsonResult = "{\"count\": " + cart.size() + "}";
+        String jsonResult = "{\"count\": " + count + "}";
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
@@ -94,6 +112,32 @@ public class CartServlet extends HttpServlet {
         List<Product> productList = productsDAL.getAllFeaturedProducts().stream().limit(4)
                 .collect(Collectors.toList());
         request.setAttribute("featured-products", productList);
+
+        HttpSession session = request.getSession(true);
+        List<SessionProduct> sessionCart = getCartFromSession(session);
+
+        List<CartProduct> cartProducts = new LinkedList<>();
+
+        double totalPrice = 0;
+        double discount = 0;
+        for (SessionProduct product : sessionCart) {
+            Optional<Product> optionalProduct = productsDAL.get(product.getProductId());
+            if(optionalProduct.isPresent()) {
+                cartProducts.add(new CartProduct(optionalProduct.get(), product.getQuantity()));
+                totalPrice += optionalProduct.get().getProductPrice() * product.getQuantity();
+                if(optionalProduct.get().getOriginalPrice().isPresent()){
+                    discount += (optionalProduct.get().getOriginalPrice().getAsDouble() - optionalProduct.get().getProductPrice()) * product.getQuantity();
+                }
+            }
+        }
+
+        //cartProducts.add(new CartProduct(productsDAL.get(1).get(), 1));
+
+        request.setAttribute("cart-products", cartProducts);
+
+
+        request.setAttribute("total-price", totalPrice);
+        request.setAttribute("discount", discount);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/Cart/cart.jsp");
         dispatcher.forward(request, response);
