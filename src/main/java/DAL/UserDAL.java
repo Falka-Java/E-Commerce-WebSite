@@ -115,13 +115,14 @@ public class UserDAL implements DAL<User> {
             conn = DbProvider.getMySqlConnection();
 
             //SQL query that will add user to the database
-            query = "INSERT INTO users (name, surname, email, pw_hash) VALUES (?, ?, ?, ?)";
+            query = "INSERT INTO users (name, surname, email, pw_hash, roleId ) VALUES (?, ?, ?, ?, ?)";
 
             pstmt = conn.prepareStatement(query);
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getSurname());
             pstmt.setString(3, user.getEmail());
             pstmt.setString(4, user.getPw_hash());
+            pstmt.setInt(5, user.getRoleId());
             int rowCount = pstmt.executeUpdate();
             if (rowCount != 0) success = true;
 

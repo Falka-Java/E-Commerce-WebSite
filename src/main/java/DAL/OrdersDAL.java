@@ -213,6 +213,45 @@ public class OrdersDAL implements DAL<Order> {
         return success;
     }
 
+    public boolean update(int id, Order order) {
+        boolean success = false;
+        DbManager dbManager = new DbManager();
+        try {
+            dbManager.createConnection();
+            dbManager.setQuery("UPDATE orders SET" +
+                    " userId = ?, creationDate = ?, userFirstName = ? , userLastName = ?, address1 = ?," +
+                    " address2 = ?, country = ?, state = ?, zip = ?, totalSum = ?, status = ? WHERE id = ?");
+
+            dbManager.prepareStatement();
+            //Setting parameters for the query
+            dbManager.getPstmt().setLong(1, order.getUserId()); //userId
+            java.sql.Date date = new java.sql.Date(order.getCreationDate().getTime()); //creationDate
+            dbManager.getPstmt().setDate(2, date);
+            dbManager.getPstmt().setString(3, order.getUserFirstName()); //userFirstName
+            dbManager.getPstmt().setString(4, order.getUserLastName()); //userLastName
+            dbManager.getPstmt().setString(5, order.getAddress1()); //address1
+            dbManager.getPstmt().setString(6, order.getAddress2()); //address2
+            dbManager.getPstmt().setString(7, order.getCountry()); //country
+            dbManager.getPstmt().setString(8, order.getState()); //state
+            dbManager.getPstmt().setInt(9, order.getZip()); //zip
+            dbManager.getPstmt().setDouble(10, order.getTotalSum()); //totalSum
+            dbManager.getPstmt().setString(11, order.getStatus()); //status
+            dbManager.getPstmt().setInt(12, id); //id
+
+            int rowsCount = dbManager.executeUpdate();
+            if (rowsCount > 0) success = true;
+
+        } catch (SQLException ex) {
+            System.out.println("SQL-Exception -> " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
+            dbManager.closeAllConnections();
+        }
+
+        return success;
+    }
+
     /**
      * Method that deletes order from database
      *

@@ -39,6 +39,8 @@
 
                                 <b>Order status:</b> <%if(order.getStatus().equals("Pending")){
                                     out.print("<span class=\"badge rounded-pill badge-warning\">Pending</span>");
+                                }else if(order.getStatus().equals("Delivered")){
+                                out.print("<span class=\"badge rounded-pill badge-success\">Delivered</span>");
                                 }else
                                     out.print("<span class=\"badge rounded-pill badge-secondary\">"+ order.getStatus() +"</span>");
                             %><br>

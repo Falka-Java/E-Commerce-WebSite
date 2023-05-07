@@ -1,4 +1,5 @@
 package DAL;
+import models.CartProduct;
 import models.Product;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -84,6 +85,55 @@ public class ProductsDAL implements DAL<Product> {
             try (ResultSet res = dbManager.executeQuery()) {
                 products = extractProducts(res);
             }
+        } catch (SQLException ex) {
+            System.out.println("SQL-Exception -> " + ex.getMessage());
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Class not found exception -> " + ex.getMessage());
+        } finally {
+            dbManager.closeAllConnections();
+        }
+        return products;
+    }
+
+    public List<CartProduct> getByOrderId(int orderId){
+        List<CartProduct> products = new LinkedList<>();
+        DbManager dbManager = new DbManager();
+        try {
+            dbManager.createConnection();
+            dbManager.setQuery("SELECT * FROM orders_products WHERE orderId = ?");
+            dbManager.prepareStatement();
+            dbManager.getPstmt().setLong(1, orderId);
+
+            List<Integer> productsIds = new LinkedList<>();
+            try (ResultSet res = dbManager.executeQuery()) {
+                while(res.next()) {
+                    int productId = (int) res.getLong("productId");
+                    productsIds.add(productId);
+                }
+            }
+            for (int i =0; i < productsIds.size(); i++){
+                Optional<Product> OProduct = get(productsIds.get(i));
+                if(OProduct.isPresent()){
+                    Product product = OProduct.get();
+
+                    boolean added = false;
+                    for (CartProduct cartProduct: products ) {
+                        if(cartProduct.getProduct().getId() == product.getId()){
+                            cartProduct.setQuantity(cartProduct.getQuantity()+1);
+                            added = true;
+                            break;
+                        }
+                    }
+                    if(!added){
+                        CartProduct cartProduct = new CartProduct(product, 1);
+                        products.add(cartProduct);
+                    }
+
+
+                }
+
+            }
+
         } catch (SQLException ex) {
             System.out.println("SQL-Exception -> " + ex.getMessage());
         } catch (ClassNotFoundException ex) {

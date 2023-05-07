@@ -51,10 +51,10 @@
             </div>
           </td>
           <td>
-            <p class="fw-normal mb-1">S<%=product.getProductPrice()%></p>
+            <p class="fw-normal mb-1"><%=product.getProductPrice()%></p>
           </td>
           <td>
-            <p class="fw-normal mb-1">S<%=product.getProductQuantity()%></p>
+            <p class="fw-normal mb-1"><%=product.getProductQuantity()%></p>
           </td>
           <td>
             <% if (product.isFeatured()) { %>
