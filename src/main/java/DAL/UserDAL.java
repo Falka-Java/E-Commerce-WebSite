@@ -50,8 +50,9 @@ public class UserDAL implements DAL<User> {
             String surname = res.getString("surname");
             String email = res.getString("email");
             String pw_hash = res.getString("pw_hash");
+            int roleId = res.getInt("roleId");
             if(name != null && surname != null && email != null && pw_hash != null)
-                result = new User(userId, name, surname, email, pw_hash);
+                result = new User(userId, name, surname, email, pw_hash, roleId);
 
         } catch (SQLException ex) {
             System.out.println("SQL-Exception -> " + ex.getMessage());
@@ -86,7 +87,8 @@ public class UserDAL implements DAL<User> {
                 String surname = res.getString("surname");
                 String email = res.getString("email");
                 String pw_hash = res.getString("pw_hash");
-                users.add(new User(userId, name, surname, email, pw_hash));
+                int roleId = res.getInt("roleId");
+                users.add(new User(userId, name, surname, email, pw_hash, roleId));
             }
 
         } catch (SQLException ex) {

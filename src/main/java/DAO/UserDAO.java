@@ -71,7 +71,7 @@ public class UserDAO implements DAO<User> {
         //Checking if email is valid
         if(!EMAIL_PATTERN.matcher(email).matches()) return "Email is not valid!";
 
-        User user = new User(name, surname, email, hashed_password);
+        User user = new User(name, surname, email, hashed_password, 0);
         if(userDAL.add(user)){
             return null;
         } else {

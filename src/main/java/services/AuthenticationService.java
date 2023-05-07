@@ -54,7 +54,13 @@ public class AuthenticationService {
             }
         }
         return userDAO.getByEmail(userEmail);
+    }
 
+    public static boolean isAuthenticatedUserAdmin(HttpServletRequest request, HttpSession session){
+        Optional<User> optionalUser = getAuthenticatedUser(request, session);
+        if(!optionalUser.isPresent()) return false;
+        User user = optionalUser.get();
+        return user.getRoleId() == 2;
     }
 
 }

@@ -1,4 +1,5 @@
 <%@ page import="jakarta.servlet.http.Cookie" %>
+<%@ page import="services.AuthenticationService" %>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/pages/css/navbar-styling.css">
 
@@ -103,26 +104,24 @@
                 </li>
 
                 <!-- Navbar dropdown -->
+                <% if(AuthenticationService.isAuthenticatedUserAdmin(request,session) == true) { %>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button"
                        data-mdb-toggle="dropdown" aria-expanded="false">
-                        Others
+                        Admin
                     </a>
+
                     <!-- Dropdown menu -->
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li>
-                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/orders-control">Orders</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">Another action</a>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider"/>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" href="${pageContext.request.contextPath}/admin/products-control">Products control</a>
                         </li>
                     </ul>
+
+                    <% } %>
                 </li>
             </ul>
             <!-- End of left elements -->

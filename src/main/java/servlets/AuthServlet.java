@@ -102,6 +102,7 @@ public class AuthServlet extends HttpServlet {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("user-email")) {
                     cookie.setMaxAge(0);
+                    cookie.setPath(request.getContextPath()+"/");
                     response.addCookie(cookie);
                 }
             }

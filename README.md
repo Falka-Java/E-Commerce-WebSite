@@ -9,6 +9,6 @@ E-Commerce website written on Java using Jakarta Servlet
 - [x] Order products
 - [x] Orders history
 - Admin panel
-- [ ] User roles
+- [x] User roles
 - [ ] Orders management
 - [ ] Adding / Editing / Removing products

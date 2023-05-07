@@ -10,9 +10,19 @@ public class User {
     private String email;
     // Password hash
     private String pw_hash;
+    private int roleId;
     //endregion
 
     //region Setters/Getters
+
+
+    public int getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(int roleId) {
+        this.roleId = roleId;
+    }
 
     public long getId() {
         return id;
@@ -57,18 +67,20 @@ public class User {
     //endregion
 
     //region Constructors
-    public User(String name, String surname, String email, String pw_hash) {
+    public User(String name, String surname, String email, String pw_hash, int roleId) {
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.pw_hash = pw_hash;
+        this.roleId = roleId;
     }
-    public User(long id, String name, String surname, String email, String pw_hash) {
+    public User(long id, String name, String surname, String email, String pw_hash, int roleId) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.pw_hash = pw_hash;
+        this.roleId = roleId;
     }
     //endregion
 
@@ -76,7 +88,7 @@ public class User {
     @Override
     public String toString(){
         return "User [id = " + id + ", name = " + name + " , surname = " + surname
-                +  ", email = " + email + ", pw_hash = " + pw_hash + "]";
+                +  ", email = " + email + ", pw_hash = " + pw_hash + ", role_id = " +roleId +"]";
     }
     //endregion
 
