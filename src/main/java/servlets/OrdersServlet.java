@@ -25,8 +25,11 @@ public class OrdersServlet extends HttpServlet {
     private OrdersDAL ordersDAL = new OrdersDAL();
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) {
-
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String path = request.getPathInfo();
+        if (path.equals("/orderslist")) {
+            getOrdersList(request, response);
+        }
     }
 
     @Override
@@ -34,8 +37,26 @@ public class OrdersServlet extends HttpServlet {
         String path = request.getPathInfo();
         if (path.equals("/placeorder")) {
             handlePlaceOrder(request, response); //Adds order and returns invoice page
-
         }
+    }
+
+    private void getOrdersList(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        HttpSession session = request.getSession(true);
+        Optional<User> optionalUser = AuthenticationService.getAuthenticatedUser(request, session);
+        if(!optionalUser.isPresent()){
+            try {
+                response.sendError(401);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        User user = optionalUser.get();
+        List<Order> orders = ordersDAL.search(o->o.getUserId() == user.getId());
+        request.setAttribute("orders", orders);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("../pages/order/userorders.jsp");
+
+        dispatcher.forward(request, response);
     }
 
     private void handlePlaceOrder(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

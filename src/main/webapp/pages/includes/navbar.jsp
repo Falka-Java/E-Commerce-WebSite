@@ -42,7 +42,7 @@
                     <% if (userEmail == null) { %>
                     <a href="<%= request.getContextPath() %>/Auth/login" class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center"> <i class="fas fa-user-alt m-1 me-md-2"></i><p class="d-none d-md-block mb-0">Sign in</p> </a>
                     <% } else { %>
-                    <a class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center" href="Auth?page=profile">
+                    <a class="me-1 border rounded py-1 px-3 nav-link d-flex align-items-center" href="<%= request.getContextPath() %>/order/orderslist">
                         <%=userName %>
                     </a>
                     <form method="post" action="<%= request.getContextPath() %>/Auth/logout">
