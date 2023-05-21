@@ -21,18 +21,6 @@ public class AuthServlet extends HttpServlet {
         } else if (path.equals("/registration")) {
             getRegistrationPage(request, response);
         }
-      /* try {
-            String path = request.getPathInfo();
-            if (path.equals("/login")) {
-                getLoginPage(request, response);
-            } else if (path.equals("/registration")) {
-                getRegistrationPage(request, response);
-            } else {
-                get404Page(request, response);
-            }
-        }catch(Exception ex) {
-            get400Page(request, response);
-        }*/
     }
 
     @Override
@@ -71,42 +59,21 @@ public class AuthServlet extends HttpServlet {
         String rememberMeInput = request.getParameter("rememberMeCheckBox");
         boolean rememberMe = rememberMeInput != null;
 
-        Optional<User> result = AuthenticationService.authenticate(email, password);
-        if (result.isPresent()) {
-            HttpSession session = request.getSession(true);
-            session.setAttribute("session-user-email", result.get().getEmail());
+        HttpSession session = request.getSession(true);
+        Optional<User> result = AuthenticationService.loginUser(email, password, rememberMe, request, response, session);
 
-            if (rememberMe) {
-                Cookie cookie = new Cookie("user-email", result.get().getEmail());
-                cookie.setMaxAge(3600 * 24); // 1 day
-                cookie.setPath(request.getContextPath()+"/");
-                response.addCookie(cookie);
-            }
-
+        if (result.isPresent())
             getSuccessfulResultPage(request, response, "Login successful!");
+        else
+            getFailedResultPage(request, response, "Email or password is incorrect!", "Auth/login");
 
-        } else {
-            getFailedResultPage(request, response, "Email or password is incorrect!","Auth/login");
-        }
     }
 
     private void handleLogOutRequest(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
-        session.invalidate(); //removes all sessions attributes bound to the session
 
-        //Deleting cookies
+        AuthenticationService.logOut(request, response, session);
 
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("user-email")) {
-                    cookie.setMaxAge(0);
-                    cookie.setPath(request.getContextPath()+"/");
-                    response.addCookie(cookie);
-                }
-            }
-        }
         //Returning home page
         response.sendRedirect(request.getContextPath());
     }
@@ -136,12 +103,11 @@ public class AuthServlet extends HttpServlet {
         if (registrationResult == null) {
             //Logging user in
             HttpSession session = request.getSession(true);
-            session.setAttribute("session-user-email", emailInput);
-
-            //Returning successful result page
-            getSuccessfulResultPage(request, response, "Registration successful!");
-        } else
-            getFailedResultPage(request, response, registrationResult, "Auth/registration");
+            if (AuthenticationService.loginUser(emailInput, passwordInput, false, request, response, session).isPresent())
+                //Returning successful result page
+                getSuccessfulResultPage(request, response, "Registration successful!");
+        }
+        getFailedResultPage(request, response, registrationResult, "Auth/registration");
     }
 
     private void getSuccessfulResultPage(HttpServletRequest request, HttpServletResponse response,

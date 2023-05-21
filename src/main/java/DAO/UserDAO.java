@@ -45,6 +45,10 @@ public class UserDAO implements DAO<User> {
         return userDAL.search(user -> user.getEmail().equals(email)).stream().findFirst();
     }
 
+    public Optional<User> getByEmailAndHashedPassword(String email, String password){
+        return userDAL.search(user -> user.getEmail().equals(email) && user.getPw_hash().equals(password)).stream().findFirst();
+    }
+
     /**
      * Returns all users
      *
